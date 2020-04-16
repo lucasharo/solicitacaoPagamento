@@ -1,0 +1,81 @@
+<div [ngBusy]="data">
+    <form #fModal="ngForm" (ngSubmit)="submitSolicitacaoPagamentoForm(solicitacaoPagamento)">
+        <h5>Produtivo</h5>
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li (click)="mudarTab('solicitacao')" id="solicitacao-tab" class="menu-tab active">
+                    <a>Solicitação</a>
+                </li>
+                <li (click)="mudarTab('itens')" id="itens-tab" class="menu-tab">
+                    <a>Itens</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="box-header" [hidden]="!id">
+                    <h3 class="box-title">
+                        {{id}}
+                        <a href="{{'http://sistemas.spls.com.br/visual3/ALD-id.asp?ald_usu=ald.comando&ald_pass=ald842011&ald_id=' + solicitacaoPagamento.id_visual}}"
+                            [hidden]="!solicitacaoPagamento.id_visual" target="_blank" class="fa fa-file-image-o"></a>
+                    </h3>
+                </div>
+                <div class="active tab-pane" id="solicitacao">
+                    <app-template-padrao [(solicitacaoPagamento)]="solicitacaoPagamento" [(fornecedor)]="fornecedor" [(cnpj)]="fornecedor.cnpj"
+                        [(data)]="data" [(toastr)]="toastr"></app-template-padrao>
+                </div>
+                <div class="tab-pane" id="itens">
+                    <div id="tabela-itens" class="hot handsontable htColumnHeaders"></div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" [hidden]="id" [disabled]="!validaForm(solicitacaoPagamento)">Lançar Solicitação de Pagamento</button>
+                        <button type="submit" class="btn btn-success" [hidden]="!id || solicitacaoPagamento.id_fila_solicitacao_pagamento != 5" [disabled]="!validaForm(solicitacaoPagamento)">Atualizar Solicitação de Pagamento</button>
+                        <div [hidden]="!id || !solicitacaoPagamento.id_fila_solicitacao_pagamento || solicitacaoPagamento.id_fila_solicitacao_pagamento > 4 || (!validaFuncionalidade('APROVAR_SOLICITACAO_GERENTE') && !validaFuncionalidade('APROVAR_SOLICITACAO_DIRETOR') && !validaFuncionalidade('APROVAR_SOLICITACAO_PRESIDENTE') && !validaFuncionalidade('APROVAR_SOLICITACAO_DATA_VENCIMENTO'))">
+                            <button type="button" class="btn btn-warning" (click)="reprovarSolicitacaoPagamento(id)">Reprovar Solicitação de Pagamento</button>
+                            <button type="button" class="btn btn-primary" (click)="aprovarSolicitacaoPagamento(id)">Aprovar Solicitação de Pagamento</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<modal #modal (onClose)="closeModal();" (onOpen)="openModal()" [ngBusy]="data">
+    <modal-header>
+        <h4>Crep Codes</h4>        
+    </modal-header>
+    <modal-content>
+        <form #fCrepCodes="ngForm">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Crep Codes</h3>
+                        </div>
+                        <div class="box-body">
+                            <table datatable id="crepCode" [dtOptions]="dtOptions[0]" [dtTrigger]="dtTrigger[0]" class="row-border hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Descrição</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of crepCodes">
+                                        <td>{{item.cC_Crep_Code_Numero}}</td>
+                                        <td>{{item.cC_Crep_Code_Descricao}}</td>
+                                    </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" (click)="modal.close();">Fechar</button>
+            </div>
+        </form>
+    </modal-content>
+</modal>
+<div style="display:block; right: 20px; height: 105px; position: fixed; bottom: 5px;">
+    <button type="button" class="btn bg-blue" (click)="modal.open();" style="border-radius: 50px;">
+        <i class="fa fa-plus"></i>
+        Crep Codes
+    </button>
+</div>

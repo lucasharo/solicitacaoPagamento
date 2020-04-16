@@ -1,0 +1,39 @@
+<div [ngBusy]="data">
+    <form #fModal="ngForm" (ngSubmit)="submitSolicitacaoPagamentoForm(solicitacaoPagamento)">
+        <h5>Car Purchase - Transporte</h5>
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li (click)="mudarTab('solicitacao')" id="solicitacao-tab" class="menu-tab active">
+                    <a>Solicitação</a>
+                </li>
+                <li (click)="mudarTab('itens')" id="itens-tab" class="menu-tab">
+                    <a>Itens</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="box-header" [hidden]="!id">
+                    <h3 class="box-title">
+                        {{id}}
+                        <a href="{{'http://sistemas.spls.com.br/visual3/ALD-id.asp?ald_usu=ald.comando&ald_pass=ald842011&ald_id=' + solicitacaoPagamento.id_visual}}"
+                            [hidden]="!solicitacaoPagamento.id_visual" target="_blank" class="fa fa-file-image-o"></a>
+                    </h3>
+                </div>
+                <div class="active tab-pane" id="solicitacao">
+                    <app-template-padrao [(solicitacaoPagamento)]="solicitacaoPagamento" [(fornecedor)]="fornecedor" [(cnpj)]="fornecedor.cnpj"
+                        [(data)]="data" [(toastr)]="toastr"></app-template-padrao>
+                </div>
+                <div class="tab-pane" id="itens">
+                    <div id="tabela-itens" class="hot handsontable htColumnHeaders"></div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" [hidden]="id" [disabled]="!validaForm(solicitacaoPagamento)">Lançar Solicitação de Pagamento</button>
+                        <button type="submit" class="btn btn-success" [hidden]="!id || solicitacaoPagamento.id_fila_solicitacao_pagamento != 5" [disabled]="!validaForm(solicitacaoPagamento)">Atualizar Solicitação de Pagamento</button>
+                        <div [hidden]="!id || !solicitacaoPagamento.id_fila_solicitacao_pagamento || solicitacaoPagamento.id_fila_solicitacao_pagamento != 7 || !validaFuncionalidade('APROVAR_SOLICITACAO_CAR_PURCHASE')">
+                            <button type="button" class="btn btn-warning" (click)="aprovarSolicitacaoPagamento(id)">Reprovar Solicitação de Pagamento</button>
+                            <button type="button" class="btn btn-primary" (click)="aprovarSolicitacaoPagamento(id)">Aprovar Solicitação de Pagamento</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,98 @@
+<div class="wrapper" [ngBusy]="data">
+    <header class="main-header">
+        <a [routerLink]="['/home']" class="logo">
+            <span class="logo-mini">
+                <b>ALD</b>
+            </span>
+            <span class="logo-lg">
+                Solic. de Pagamento
+            </span>
+        </a>
+        <nav class="navbar navbar-static-top">
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown user user-menu">
+                        <a class="dropdown-toggle" href="{{aplicacoesUrl}}" target="_blank">
+                            <img src="{{usuario?.img}}" class="user-image" alt="User Image">
+                            <span class="hidden-xs">{{usuario?.nome}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header">DASHBOARD</li>
+                <li routerLinkActive="active" [routerLink]="['/home']" [hidden]="!validaFuncionalidade('DASHBOARD')">
+                    <a>
+                        <i class="fa fa-pie-chart"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="header">SOLICITAÇÂO DE PAGAMENTO</li>
+                <li routerLinkActive="active" [routerLink]="['/aprovacao']" [hidden]="!validaFuncionalidade('APROVAR_SOLICITACAO_GERENTE') &&
+                !validaFuncionalidade('APROVAR_SOLICITACAO_DIRETOR') &&
+                !validaFuncionalidade('APROVAR_SOLICITACAO_PRESIDENTE') &&
+                !validaFuncionalidade('APROVAR_SOLICITACAO_DATA_VENCIMENTO') &&
+                !validaFuncionalidade('APROVAR_SOLICITACAO_CAR_PURCHASE')">
+                    <a>
+                        <i class="fa fa-check-square-o"></i>
+                        <span>Aprovações</span>
+                    </a>
+                </li>
+                <li routerLinkActive="active" [routerLink]="['/produtivo']" [hidden]="!validaFuncionalidade('LANCAR_SOLICITACAO_PRODUTIVO') &&
+                !validaFuncionalidade('EDITAR_SOLICITACAO_PRODUTIVO') &&
+                !validaFuncionalidade('CANCELAR_SOLICITACAO_PRODUTIVO')">
+                    <a>
+                        <i class="fa fa-usd"></i>
+                        <span>Produtivo</span>
+                    </a>
+                </li>
+                <li routerLinkActive="active" [routerLink]="['/nao-produtivo']" [hidden]="!validaFuncionalidade('LANCAR_SOLICITACAO_NAO_PRODUTIVO') &&
+                !validaFuncionalidade('EDITAR_SOLICITACAO_NAO_PRODUTIVO') &&
+                !validaFuncionalidade('CANCELAR_SOLICITACAO_NAO_PRODUTIVO')">
+                    <a>
+                        <i class="fa fa-usd"></i>
+                        <span>Não Produtivo</span>
+                    </a>
+                </li>
+                <li routerLinkActive="active" [routerLink]="['/adiantamento']" [hidden]="!validaFuncionalidade('LANCAR_SOLICITACAO_ADIANTAMENTO') &&
+                !validaFuncionalidade('EDITAR_SOLICITACAO_ADIANTAMENTO') &&
+                !validaFuncionalidade('CANCELAR_SOLICITACAO_ADIANTAMENTO')">
+                    <a>
+                        <i class="fa fa-usd"></i>
+                        <span>Adiantamento</span>
+                    </a>
+                </li>
+                <li routerLinkActive="active" [routerLink]="['/car-purchase']" [hidden]="!validaFuncionalidade('LANCAR_SOLICITACAO_CAR_PURCHASE') &&
+                !validaFuncionalidade('EDITAR_SOLICITACAO_CAR_PURCHASE') &&
+                !validaFuncionalidade('CANCELAR_SOLICITACAO_CAR_PURCHASE')">
+                    <a>
+                        <i class="fa fa-usd"></i>
+                        <span>Car Purchase</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </aside>
+    <div class="content-wrapper">
+        <section class="content">
+            <router-outlet></router-outlet>
+        </section>
+    </div>
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 1.0.0
+        </div>
+        <strong>Copyright &copy; 2014-2016</strong>
+    </footer>
+    <div class="control-sidebar-bg"></div>
+</div>

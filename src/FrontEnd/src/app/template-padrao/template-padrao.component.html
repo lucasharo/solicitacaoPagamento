@@ -1,0 +1,196 @@
+<div class="row" [ngBusy]="data">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>CNPJ do Fornecedor:</label>
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-wrench"></i>
+                        </div>
+                        <input required [disabled]="solicitacaoPagamento.id_fila_solicitacao_pagamento && solicitacaoPagamento.id_fila_solicitacao_pagamento != 5"
+                            class="form-control" id="cnpj" type="text" placeholder="CNPJ do Fornecedor" name="cnpj" mask="00.000.000/0000-00"
+                            minlength="18" #vCNPJ="ngModel" [(ngModel)]="cnpj" (change)="cnpj.length == 18 && getFornecedor(cnpj)">
+                        <div [hidden]="solicitacaoPagamento.id_fila_solicitacao_pagamento && solicitacaoPagamento.id_fila_solicitacao_pagamento != 5"
+                            class="input-group-addon" (click)="vCNPJ.valid && getFornecedor(cnpj)">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label>Nome Fantasia:</label>
+        <p type="text" name="nomeFantasia">{{fornecedor?.nome_fantasia}}</p>
+    </div>
+    <div class="col-md-6">
+        <label>Razão Social:</label>
+        <p type="text" name="razaoSocial">{{fornecedor?.razao_Social}}</p>
+    </div>
+    <div class="col-md-3">
+        <label>Nº Supplier Aldavar:</label>
+        <p type="text" name="numero">{{fornecedor?.numero}}</p>
+    </div>
+    <div class="col-md-6">
+        <label>Endereço completo:</label>
+        <p type="text" name="endereco">{{fornecedor?.endereco}} - {{solicitacaoPagamento.fornecedor?.complemento}}</p>
+    </div>
+    <div class="col-md-3">
+        <label>Banco / Ag. / Conta:</label>
+        <p type="text" name="contaCorrente">{{fornecedor?.conta_Corrente?.substring(0, 5)}} / {{fornecedor?.agencia}} / {{fornecedor?.conta_Corrente?.substring(6)}}</p>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group" [ngClass]="{'has-error':!vDiretoria.valid  && vDiretoria.dirty}">
+            <label>Diretoria:</label>
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-sticky-note"></i>
+                </div>
+                <select class="form-control" name="diretoria" #vDiretoria="ngModel" [(ngModel)]="solicitacaoPagamento.id_diretoria">
+                    <option value="1">Comercial</option>
+                    <option value="2">Financeira</option>
+                    <option value="3">TI</option>
+                    <option value="4">Manutenção e Logística</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group" [ngClass]="{'has-error':!vValorTotal.valid  && vValorTotal.dirty}">
+            <label>Valor Total:</label>
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-usd"></i>
+                </div>
+                <input required class="form-control" type="text" autocomplete="off" placeholder="Valor Total" name="valorTotal" currencyMask
+                    #vValorTotal="ngModel" [(ngModel)]="solicitacaoPagamento.valor_total">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3" [hidden]="!fgAdiantamento">
+        <div class="form-group" [ngClass]="{'has-error':!vDataPagamento.valid  && vDataPagamento.dirty}">
+            <label>Data de Pagamento:</label>
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input type="text" placeholder="Data de Pagamento" class="form-control" required id="dataPagamento" name="dataPagamento"
+                    [brmasker]="{mask:'00/00/0000', len:10}" minlength="10" maxlength="10" #vDataPagamento="ngModel" [(ngModel)]="solicitacaoPagamento.dt_pagamento">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group" [ngClass]="{'has-error':!vFormaPagamento.valid  && vFormaPagamento.dirty}">
+            <label>Forma de Pagamento:</label>
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-sticky-note"></i>
+                </div>
+                <select class="form-control" name="formaPagamento" #vFormaPagamento="ngModel" [(ngModel)]="solicitacaoPagamento.id_forma_pagamento">
+                    <option value="1">Boleto</option>
+                    <option value="2">Transferência Eletrônica</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <label>Observações:</label>
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-sticky-note"></i>
+                </div>
+                <textarea rows="2" maxlength="250" class="form-control" placeholder="Observações" name="observacao" [(ngModel)]="solicitacaoPagamento.obs"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">Arquivos</h3>
+                <button type="button" class="btn btn-default pull-right" [hidden]="solicitacaoPagamento.id && solicitacaoPagamento.id_fila_solicitacao_pagamento != 5"
+                    (click)="arquivoModal.open()">Adicionar Arquivos</button>
+            </div>
+            <div class="box-body no-padding">
+                <table class="table table-striped">
+                    <tr>
+                        <th>Tipo Arquivo</th>
+                        <th>Nome Arquivo</th>
+                        <th colspan="2" style="width: 20px">#</th>
+                    </tr>
+                    <tr *ngFor="let arquivo of solicitacaoPagamento.documento_Fiscal">
+                        <td>{{arquivo.tipo_Arquivo?.descricao}}</td>
+                        <td>{{arquivo.nome_arquivo}}</td>
+                        <td style="width: 10px">
+                            <a href="{{'http://sistemas.spls.com.br/visual3/ALD-id.asp?ald_usu=ald.comando&ald_pass=ald842011&ald_id=' + arquivo.id_visual}}"
+                                [hidden]="!arquivo.id_visual" onclick="window.open(this.href, 'newwindow', 'width=1250, height=650'); return false;" target="_blank" class="fa fa-file-image-o pull-left"></a>
+                        </td>
+                        <td style="width: 10px" [hidden]="solicitacaoPagamento.id && solicitacaoPagamento.id_fila_solicitacao_pagamento != 5">
+                            <i class="fa fa-close pull-left cursor" (click)="deletarArquivo(arquivo, solicitacaoPagamento)"></i>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<modal #arquivoModal>
+    <modal-header>
+        <h4>Arquivos</h4>
+    </modal-header>
+    <modal-content>
+        <form #fArquivo="ngForm" (ngSubmit)="submitAdicionarArquivos(arquivos)">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group" [ngClass]="{'has-error':!vTipoArquivo.valid  && vTipoArquivo.dirty}">
+                        <label>Tipo Arquivo:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-sticky-note"></i>
+                            </div>
+                            <select class="form-control" name="tipoArquivo" #vTipoArquivo="ngModel" [(ngModel)]="tipoArquivo" (change)="resetArquivos();">
+                                <option value="1">Nota Fiscal</option>
+                                <option value="2" [hidden]="solicitacaoPagamento.id_forma_pagamento == '2'">Boleto</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="text-align: center">
+                        <div style="text-align: center">
+                            <label for="arquivo" title="Clique para selecionar os arquivos" style="border-radius: 50%; height: 100px; width: 100px; background-size: 100px 100px; background-repeat: no-repeat;"
+                                [ngStyle]="{'background-image': 'url(' + img + ')'}">
+                                <input style="display: none" type="file" id="arquivo" name="arquivo" multiple accept="application/pdf, image/png, image/jpeg"
+                                    (change)="handleFileSelect($event, tipoArquivo)">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Arquivos</h3>
+                        </div>
+                        <div class="box-body no-padding">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th style="width: 10px">#</th>
+                                    <th>Nome Arquivo</th>
+                                </tr>
+                                <tr *ngFor="let arquivo of arquivos">
+                                    <td>#</td>
+                                    <td>{{arquivo.nome_arquivo}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-left" (click)="arquivoModal.close(); resetArquivos(); fArquivo.reset();">Cancelar</button>
+                <button type="submit" class="btn btn-success" [disabled]="!fArquivo.valid">Adicionar Arquivos</button>
+            </div>
+        </form>
+    </modal-content>
+</modal>

@@ -1,0 +1,49 @@
+Objeto de retorno:
+	Resposta {
+		Mensagem: string
+		Exception: Exception
+		Status: bool
+		Dados: Object - Genérico
+	}
+
+InsereNotaFiscal: Nota Fiscal
+	Parâmetro: 
+		NotaFiscal {
+			ged_agr = "IDVISUAL"
+			nf_nr = "nf_nr" Número da Nota Fiscal
+			forn_cnpj = forn_cnpj" CNPJ
+			vlr_bruto = "vlr_bruto" Valor bruto
+			dt_emiss_nf = "dt_emiss_nf" Data de Emissão
+			chave_acesso = "chave_nf" Chave de acesso
+			os_nr = "os_nr" - Número OS
+		}
+	Retorno:
+		Resposta {
+			Mensagem: string
+			Exception: Exception
+			Status: bool
+		}
+
+InsereNotasFiscais: Lista de Notas Fiscais
+	Parâmetro: IList<NotaFiscal> [{
+		ged_agr = "IDVISUAL"
+        nf_nr = "nf_nr" Número da Nota Fiscal
+        forn_cnpj = forn_cnpj" CNPJ
+        vlr_bruto = "vlr_bruto" Valor bruto
+        dt_emiss_nf = "dt_emiss_nf" Data de Emissão
+        chave_acesso = "chave_nf" Chave de acesso
+        os_nr = "os_nr" - Número OS
+	}]
+	Retorno:
+		Resposta {
+			Mensagem: string
+			Exception: Exception
+			Status: bool
+			Dados: IList<NotaFiscalErro> [{
+				NotaFiscal
+				Erro
+			}]
+		}
+TesteConexao: Teste de conexão
+	Retorno:
+		string

@@ -1,0 +1,85 @@
+<div [ngBusy]="data">
+    <form #fModal="ngForm" (ngSubmit)="submitSolicitacaoPagamentoForm(solicitacaoPagamento)">
+        <h5>Não Produtivo</h5>
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li (click)="mudarTab('solicitacao')" id="solicitacao-tab" class="menu-tab active">
+                    <a>Solicitação</a>
+                </li>
+                <li (click)="mudarTab('itens')" id="itens-tab" class="menu-tab">
+                    <a>Itens</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="box-header" [hidden]="!id">
+                    <h3 class="box-title">
+                        {{id}}
+                        <a href="{{'http://sistemas.spls.com.br/visual3/ALD-id.asp?ald_usu=ald.comando&ald_pass=ald842011&ald_id=' + solicitacaoPagamento.id_visual}}"
+                            [hidden]="!solicitacaoPagamento.id_visual" target="_blank" class="fa fa-file-image-o"></a>
+                    </h3>
+                </div>
+                <div class="active tab-pane" id="solicitacao">
+                    <app-template-padrao [(solicitacaoPagamento)]="solicitacaoPagamento" [(fornecedor)]="fornecedor" [(cnpj)]="fornecedor.cnpj"
+                        [(data)]="data" [(toastr)]="toastr"></app-template-padrao>
+                </div>
+                <div class="tab-pane" id="itens">
+                    <div id="tabela-itens" class="hot handsontable htColumnHeaders"></div>
+                    <!--<div class="row">
+                                <div class="col-xs-12">
+                                    <div class="box">
+                                        <div class="box-header">
+                                            <h3 class="box-title">Itens</h3>
+                                            <div class="pull-right box-tools">
+                                                <button type="button" class="btn btn-info btn-sm" (click)="itemModal.open();">
+                                                    Adicionar Item
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="box-body table-responsive no-padding">
+                                            <table class="table table-hover">
+                                                <tr>
+                                                    <th>NF</th>
+                                                    <th>Placa</th>
+                                                    <th>Crep Code</th>
+                                                    <th>Categoria</th>
+                                                    <th>Valor</th>
+                                                    <th>Data Emiss.</th>
+                                                    <th>Data Rec.</th>
+                                                    <th>Data Venc.</th>
+                                                    <th>Qtd.</th>
+                                                    <th>Km</th>
+                                                    <th>Chave Acesso</th>
+                                                    <th>Texto do Rebill</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>1111111111</td>
+                                                    <td>FOI2243</td>
+                                                    <td>845456</td>
+                                                    <td>XXXX</td>
+                                                    <td>XXXX</td>
+                                                    <td>10/10/2017</td>
+                                                    <td>10/10/2017</td>
+                                                    <td>10/10/2017</td>
+                                                    <td>10</td>
+                                                    <td>20000</td>
+                                                    <td>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</td>
+                                                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" [hidden]="id" [disabled]="!validaForm(solicitacaoPagamento)">Lançar Solicitação de Pagamento</button>
+                        <button type="submit" class="btn btn-success" [hidden]="!id || solicitacaoPagamento.id_fila_solicitacao_pagamento != 5" [disabled]="!validaForm(solicitacaoPagamento)">Atualizar Solicitação de Pagamento</button>
+                        <div [hidden]="!id || !solicitacaoPagamento.id_fila_solicitacao_pagamento || solicitacaoPagamento.id_fila_solicitacao_pagamento > 4 || (!validaFuncionalidade('APROVAR_SOLICITACAO_GERENTE') && !validaFuncionalidade('APROVAR_SOLICITACAO_DIRETOR') && !validaFuncionalidade('APROVAR_SOLICITACAO_PRESIDENTE') && !validaFuncionalidade('APROVAR_SOLICITACAO_DATA_VENCIMENTO'))">
+                            <button type="button" class="btn btn-warning" (click)="reprovarSolicitacaoPagamento(id)">Reprovar Solicitação de Pagamento</button>
+                            <button type="button" class="btn btn-primary" (click)="aprovarSolicitacaoPagamento(id)">Aprovar Solicitação de Pagamento</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

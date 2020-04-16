@@ -1,0 +1,33 @@
+<div [ngBusy]="data">
+    <form #f="ngForm" (ngSubmit)="submitSolicitacaoPagamentoForm(solicitacaoPagamento)">
+        <h5>Adiantamento</h5>
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li (click)="mudarTab('solicitacao')" id="solicitacao-tab" class="menu-tab active">
+                    <a>Solicitação</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="box-header" [hidden]="!id">
+                    <h3 class="box-title">
+                        {{id}}
+                        <a href="{{'http://sistemas.spls.com.br/visual3/ALD-id.asp?ald_usu=ald.comando&ald_pass=ald842011&ald_id=' + solicitacaoPagamento.id_visual}}"
+                            [hidden]="!solicitacaoPagamento.id_visual" target="_blank" class="fa fa-file-image-o"></a>
+                    </h3>
+                </div>
+                <div class="active tab-pane" id="solicitacao">
+                    <app-template-padrao [(solicitacaoPagamento)]="solicitacaoPagamento" [(fornecedor)]="fornecedor" [(cnpj)]="fornecedor.cnpj"
+                        [(data)]="data" [(toastr)]="toastr" [(fgAdiantamento)]="fgAdiantamento"></app-template-padrao>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-success" [hidden]="id" [disabled]="!validaForm(solicitacaoPagamento)">Lançar Solicitação de Adiantamento</button>
+            <button type="submit" class="btn btn-success" [hidden]="!id || solicitacaoPagamento.id_fila_solicitacao_pagamento != 5" [disabled]="!validaForm(solicitacaoPagamento)">Atualizar Solicitação de Adiantamento</button>
+            <div [hidden]="!id || !solicitacaoPagamento.id_fila_solicitacao_pagamento || solicitacaoPagamento.id_fila_solicitacao_pagamento > 4 || (!validaFuncionalidade('APROVAR_SOLICITACAO_GERENTE') && !validaFuncionalidade('APROVAR_SOLICITACAO_DIRETOR') && !validaFuncionalidade('APROVAR_SOLICITACAO_PRESIDENTE') && !validaFuncionalidade('APROVAR_SOLICITACAO_DATA_VENCIMENTO'))">
+                <button type="button" class="btn btn-warning" (click)="reprovarSolicitacaoPagamento(id)">Reprovar Solicitação de Adiantamento</button>
+                <button type="button" class="btn btn-primary" (click)="aprovarSolicitacaoPagamento(id)">Aprovar Solicitação de Adiantamento</button>
+            </div>
+        </div>
+    </form>
+</div>

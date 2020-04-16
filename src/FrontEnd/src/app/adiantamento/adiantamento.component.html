@@ -1,0 +1,218 @@
+<div [ngBusy]="data">
+    <div class="box" style="min-height: 200px">
+        <div class="box-header">
+            <h3 class="box-title">Solicitações de Pagamento</h3>
+        </div>
+        <div class="box-body">
+            <table datatable id="nfs" [dtOptions]="dtOptions[0]" [dtTrigger]="dtTrigger[0]" class="row-border hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>CNPJ</th>
+                        <th>Razão Social</th>
+                        <th>Diretoria</th>
+                        <th>Forma Pagamento</th>
+                        <th>Valor Total</th>
+                        <th>Data Pagamento</th>
+                        <th>Status</th>
+                        <th>Data Solicitação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of solicitacoesPagamento" [routerLink]="['edit-solicitacao', item.id]">
+                        <td>{{item.id}}</td>
+                        <td>{{item.alD_ETL_Fornecedores?.cnpj | cnpj}}</td>
+                        <td>{{item.alD_ETL_Fornecedores?.razao_Social}}</td>
+                        <td>{{item.diretoria?.descricao}}</td>
+                        <td>{{item.forma_Pagamento?.descricao}}</td>
+                        <td>{{item.valor_total | currency:'BRL': true}}</td>
+                        <td>{{item.dt_pagamento | date:'dd/MM/yyyy'}}</td>
+                        <td>{{item.fila_Solicitacao_Pagamento?.descricao}}</td>
+                        <td>{{item.dt_criacao | date:'dd/MM/yyyy'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<modal #itemModal (onClose)="fModal.reset(); closeModal();" (onOpen)="actionOnOpen()">
+    <modal-header>
+        <h4>Itens</h4>
+    </modal-header>
+    <modal-content [ngBusy]="data">
+        <form #fModal="ngForm" (ngSubmit)="submitSolicitacaoPagamentoForm(solicitacaoPagamento)">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group" [ngClass]="{'has-error':!vNumeroLinha.valid  && vNumeroLinha.dirty}">
+                        <label>Número da Linha:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-sticky-note"></i>
+                            </div>
+                            <input required class="form-control" type="text" placeholder="Número da Linha" name="numeroLinha" minlength="2" maxlength="3"
+                                [pattern]="'[0-9]*'" #vNumeroLinha="ngModel" [(ngModel)]="item.numeroLinha">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group" [ngClass]="{'has-error':!vNumeroNotaFiscal.valid  && vNumeroNotaFiscal.dirty}">
+                        <label>Número Nota Fiscal:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-sticky-note"></i>
+                            </div>
+                            <input required class="form-control" type="text" placeholder="Número da Nota Fiscal" name="numeroNotaFiscal" maxlength="10"
+                                [pattern]="'[0-9]*'" #vNumeroNotaFiscal="ngModel" [(ngModel)]="item.numeroNotaFiscal">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group" [ngClass]="{'has-error':!vPlaca.valid  && vPlaca.dirty}">
+                        <label>Placa:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-car"></i>
+                            </div>
+                            <input class="form-control" type="text" placeholder="Placa" name="placa" [pattern]="'[A-Za-z]{3}[0-9]{4}'" maxlength="7"
+                                #vPlaca="ngModel" [(ngModel)]="item.placa">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group" [ngClass]="{'has-error':!vCrepCode.valid  && vCrepCode.dirty}">
+                        <label>Crep Code:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-sticky-note"></i>
+                            </div>
+                            <select class="form-control" name="crepCode" #vCrepCode="ngModel" [(ngModel)]="item.crepCode">
+                                <option value="1">556456</option>
+                                <option value="2">456456</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" [ngClass]="{'has-error':!vCategoria.valid  && vCategoria.dirty}">
+                        <label>Categoria:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-sticky-note"></i>
+                            </div>
+                            <select required class="form-control" placeholder="Categoria" name="categoria" #vCategoria="ngModel" [(ngModel)]="item.categoria">
+                                <option value="ZE">ZE - NF entrada (material) - NFe</option>
+                                <option value="ZB">ZB - NF entrada de serviço - NFe</option>
+                                <option value="ZA">ZA - NF entrada de serviço - Manual</option>
+                                <option value="E1">E1 - NF entrada (material) - Manual</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" [ngClass]="{'has-error':!vValor.valid  && vValor.dirty}">
+                        <label>Valor:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-usd"></i>
+                            </div>
+                            <input required class="form-control" type="text" placeholder="Valor" name="valor" currencyMask #vValor="ngModel" [(ngModel)]="item.valor">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" [ngClass]="{'has-error':!vDataEmissao.valid  && vDataEmissao.dirty}">
+                        <label>Data de Emissão:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" placeholder="Data de Emissão" class="form-control" required id="dataEmissao" (change)="item.dataEmissao.length == 10 && blurCalculaDataVencimento(agreement.dataEmissao)"
+                                name="dataEmissao" [brmasker]="{mask:'00/00/0000', len:10}" minlength="10" maxlength="10" #vDataEmissao="ngModel"
+                                [(ngModel)]="item.dataEmissao">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" [ngClass]="{'has-error':!vDataVencimento.valid  && vDataVencimento.dirty}">
+                        <label>Data de Vencimento:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" placeholder="Data de Vencimento" class="form-control" required id="dataVencimento" name="dataVencimento"
+                                (blur)="validaDataVencimento(agreement.dataVencimento)" [brmasker]="{mask:'00/00/0000', len:10}"
+                                minlength="10" maxlength="10" #vDataVencimento="ngModel" [(ngModel)]="item.dataVencimento">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group" [ngClass]="{'has-error':!vDataRecebimento.valid  && vDataRecebimento.dirty}">
+                        <label>Data de Recebimento:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" placeholder="Data de Recebimento" class="form-control" required id="dataRecebimento" name="dataRecebimento"
+                                [brmasker]="{mask:'00/00/0000', len:10}" minlength="10" maxlength="10" #vDataRecebimento="ngModel"
+                                [(ngModel)]="item.dataRecebimento">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group" [ngClass]="{'has-error':!vQtd.valid  && vQtd.dirty}">
+                        <label>Quantidade:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-sticky-note"></i>
+                            </div>
+                            <input required class="form-control" type="number" placeholder="Quantidade" name="qtd" maxlength="10" [pattern]="'[0-9]*'"
+                                #vQtd="ngModel" [(ngModel)]="item.qtd">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group" [ngClass]="{'has-error':!vKm.valid  && vKm.dirty}">
+                        <label>Km:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-sticky-note"></i>
+                            </div>
+                            <input required class="form-control" type="number" placeholder="Km" name="km" maxlength="10" [pattern]="'[0-9]*'" #vKm="ngModel"
+                                [(ngModel)]="item.km">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group" [ngClass]="{'has-error':!vChaveAcesso.valid  && vChaveAcesso.dirty}">
+                        <label>Chave de Acesso:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-sticky-note"></i>
+                            </div>
+                            <input [required]="[item.categoria == 'ZE']" [disabled]="item.categoria != 'ZE'" [pattern]="'[0-9]*'" minlength="44" maxlength="44"
+                                class="form-control" type="text" placeholder="Chave de Acesso" name="chaveAcesso" #vChaveAcesso="ngModel"
+                                [(ngModel)]="item.chaveAcesso">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group" [ngClass]="{'has-error':!vTxtRebill.valid  && vTxtRebill.dirty}">
+                        <label>Texto Rebill:</label>
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-sticky-note"></i>
+                            </div>
+                            <textarea rows="2" maxlength="250" class="form-control" placeholder="Texto Rebill" name="txtRebill" #vTxtRebill="ngModel"
+                                [(ngModel)]="item.txtRebill"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </modal-content>
+</modal>
+<div style="display:block; right: 20px; height: 105px; position: fixed; bottom: 5px;">
+    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--primary" [routerLink]="['add-solicitacao']">
+        <i class="material-icons">add</i>
+    </button>
+</div>

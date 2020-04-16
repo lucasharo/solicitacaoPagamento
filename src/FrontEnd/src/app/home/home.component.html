@@ -1,0 +1,64 @@
+<div [ngBusy]="data">
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <div class="small-box bg-aqua" [routerLink]="['/produtivo']">
+                <div class="inner">
+                    <h3>{{produtivo.valor | currency:'BRL': true}}</h3>
+                    <p>Produtivo</p>
+                </div>
+                <div class="icon">
+                    {{produtivo.quantidade}}
+                </div>                
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="small-box bg-green" [routerLink]="['/nao-produtivo']">
+                <div class="inner">
+                    <h3>{{naoProdutivo.valor | currency:'BRL': true}}</h3>
+                    <p>Não Produtivo</p>
+                </div>
+                <div class="icon">
+                    {{naoProdutivo.quantidade}}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="small-box bg-yellow" [routerLink]="['/adiantamento']">
+                <div class="inner">
+                    <h3>{{adiantamento.valor | currency:'BRL': true}}</h3>
+                    <p>Adiantamento</p>
+                </div>
+                <div class="icon">
+                    {{adiantamento.quantidade}}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="small-box bg-red" [routerLink]="['/car-purchase']">
+                <div class="inner">
+                    <h3>{{carPurchase.valor | currency:'BRL': true}}</h3>
+                    <p>Car Purchase</p>
+                </div>
+                <div class="icon">
+                    {{carPurchase.quantidade}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="produtivo" class="grafico center-block"></div>
+        </div>
+        <div class="col-md-6">
+            <div id="nao-produtivo" class="grafico center-block"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="adiantamento" class="grafico center-block"></div>
+        </div>
+        <div class="col-md-6">
+            <div id="car-purchase" class="grafico center-block"></div>
+        </div>
+    </div>
+</div>
